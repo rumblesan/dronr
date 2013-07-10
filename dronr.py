@@ -58,7 +58,7 @@ def download_track(jamendo, track_id, track_name, file_format):
         "audioformat": file_format
     }
 
-    filename = track_name + "." + file_format
+    filename = track_name.lower().replace(' ', '_') + "." + file_format
 
     with open(filename, "w") as fp:
         raw_response = jamendo.download_track(track_id, dl_request_args)
