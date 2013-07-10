@@ -35,11 +35,14 @@ def main():
 
     jamendo_client_id = config.get('jamendo', 'clientid')
 
+    track_ordering = config.get('jamendo', 'track_ordering')
+    audio_format = config.get('audio', 'format')
+
     j = jamendo(jamendo_client_id)
 
     top100_args = {
         "limit": 100,
-        "order": "popularity_week",
+        "order": track_ordering,
         "ccsa": 1
     }
     top100 = j.get("tracks", top100_args)
@@ -48,7 +51,7 @@ def main():
 
     print(track)
 
-    download_track(j, track["id"], track["name"], "ogg")
+    download_track(j, track["id"], track["name"], audio_format)
 
 
 def download_track(jamendo, track_id, track_name, file_format):
