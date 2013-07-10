@@ -39,7 +39,7 @@ class jamendo(object):
             [("id", track_id)]
         )
         r = requests.get(url, params=payload)
-        return r
+        return r.content()
 
 
 if __name__ == '__main__':
