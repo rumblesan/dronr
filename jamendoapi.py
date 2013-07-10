@@ -32,14 +32,14 @@ class jamendo(object):
         return r.json()["results"]
 
     def download_track(self, track_id, args={}):
-        url = "%s/%s" % (self.url, self.file_endpoint)
+        url = "%s/%s" % (self.api_url, self.file_endpoint)
         payload = dict(
             self.default_file_payload.items() +
             args.items() +
             [("id", track_id)]
         )
-        r = requests.get(url, params=payload)
-        return r.content()
+        r = requests.get(url, params=payload, stream=True)
+        return r.raw
 
 
 if __name__ == '__main__':
