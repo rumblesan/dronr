@@ -6,6 +6,8 @@ from datetime import datetime
 
 from jamendoapi import jamendo
 
+from audioprocessor import AudioProcessor
+
 import random
 
 
@@ -35,6 +37,8 @@ def main():
 
     jamendo_client_id = config.get('jamendo', 'clientid')
 
+    audio = AudioProcessor()
+
     track_ordering = config.get('jamendo', 'track_ordering')
     audio_format = config.get('audio', 'format')
 
@@ -51,7 +55,18 @@ def main():
 
     print(track)
 
-    download_track(j, track["id"], track["name"], audio_format)
+    track_name = track["name"].lower().replace(' ', '_')
+    track_file = track_name + "." + audio_format
+
+    wave_name = track_name + ".wav"
+    stretched_wave = track_name + "-stretched.wav"
+    final_file = track_name + "-stretched.mp3"
+
+    download_track(j, track["id"], track_file, audio_format)
+
+    audio.decode(track_file, wave_name)
+    audio.stretch(wave_name, stretched_wave)
+    audio.encode(stretched_wave, final_file)
 
 
 def download_track(jamendo, track_id, track_name, file_format):
@@ -61,9 +76,7 @@ def download_track(jamendo, track_id, track_name, file_format):
         "audioformat": file_format
     }
 
-    filename = track_name.lower().replace(' ', '_') + "." + file_format
-
-    with open(filename, "w") as fp:
+    with open(track_name, "w") as fp:
         raw_response = jamendo.download_track(track_id, dl_request_args)
         fp.write(raw_response.read())
 
